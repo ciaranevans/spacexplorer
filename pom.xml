@@ -24,6 +24,9 @@
         <maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
         <rest-assured.version>3.3.0</rest-assured.version>
         <jackson-module-kotlin.version>2.9.7</jackson-module-kotlin.version>
+        <jsonassert.version>1.5.0</jsonassert.version>
+        <wiremock.version>2.21.0</wiremock.version>
+        <spring-cloud-contract-wiremock.version>2.1.0.RELEASE</spring-cloud-contract-wiremock.version>
     </properties>
 
     <dependencies>
@@ -55,6 +58,24 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
             <version>${jackson-module-kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-contract-wiremock</artifactId>
+            <version>${spring-cloud-contract-wiremock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>${jsonassert.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
