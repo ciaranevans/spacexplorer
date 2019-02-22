@@ -1,4 +1,4 @@
-package com.ciaranevans.spacexplorer
+package com.ciaranevans.spacexplorer.unit
 
 import org.junit.Test
 import org.junit.runner.RunWith

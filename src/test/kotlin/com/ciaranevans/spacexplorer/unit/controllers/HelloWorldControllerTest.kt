@@ -1,5 +1,6 @@
-package com.ciaranevans.spacexplorer.controllers
+package com.ciaranevans.spacexplorer.unit.controllers
 
+import com.ciaranevans.spacexplorer.controllers.HelloWorldController
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
