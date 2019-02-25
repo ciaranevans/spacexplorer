@@ -18,25 +18,26 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = [SpaceXplorerApplication::class])
-@AutoConfigureWireMock(port = 8090)
+@AutoConfigureWireMock(port = 0)
 class SpaceXplorerSteps(@LocalServerPort
                         val port: Int) {
 
-    lateinit var response : Response
+    lateinit var response: Response
 
     @Given("^the https://api.spacexdata.com/v3/rockets is mocked to return some rockets$")
     fun theOriginalRocketsEndpointIsMockedToReturnRockets() {
         stubFor(
                 WireMock
-                        .get(urlEqualTo("https://api.spacexdata.com/v3/rockets"))
+                        .get(urlEqualTo("/v3/rockets"))
                         .willReturn(
                                 aResponse()
                                         .withStatus(HttpStatus.OK.value())
                                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
-                                        .withBody("hello")
+                                        .withBody("""[{"id":0,"active":true,"stages":2,
+                                            "boosters":0,"cost_per_launch":50000000},{"id":1,"active":true,"stages":2,
+                                            "boosters":0,"cost_per_launch":50000000}]""")
                         )
         )
     }
@@ -55,12 +56,16 @@ class SpaceXplorerSteps(@LocalServerPort
                 .isEqualTo(expectedResponse)
     }
 
-    @Then("^I receive a response of 4 rockets$")
-    fun iReceiveAResponseOf4Rockets() {
-        val rockets: List<Rocket> = response.body.jsonPath().getList("")
+    @Then("^I receive a response of \"(\\d+)\" rockets$")
+    fun iReceiveAResponseOf4Rockets(numberOfRockets: Int) {
+        val rockets: List<Rocket> = response.body.jsonPath().getList("", Rocket::class.java)
         assertThat(rockets.size)
-                .`as`("Should contain 4 rockets")
-                .isEqualTo(3)
+                .`as`("Should contain $numberOfRockets rockets")
+                .isEqualTo(numberOfRockets)
+
+        assertThat(rockets[1].id)
+                .`as`("Should be one of the mocked rockets")
+                .isEqualTo(1)
     }
 
 }

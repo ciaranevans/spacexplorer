@@ -1,0 +1,4 @@
+---
+
+spacex-api:
+  url: http://localhost:${wiremock.server.port}/v3

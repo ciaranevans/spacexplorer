@@ -2,17 +2,23 @@ package com.ciaranevans.spacexplorer.services
 
 import com.ciaranevans.spacexplorer.Rocket
 import com.ciaranevans.spacexplorer.exceptions.RocketNotFoundException
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
 @Service
-class RocketsService(val restTemplate: RestTemplate) {
+class RocketsService(
+        val restTemplate: RestTemplate,
+        @Value("\${spacex-api.url}") spacexApiEndpoint: String
+) {
+
+    private val rocketsEndpoint = "$spacexApiEndpoint/rockets"
 
     fun getAllRockets(): List<Rocket> {
         return runCatching {
-            restTemplate.exchange("https://api.spacexdata.com/v3/rockets",
+            restTemplate.exchange(rocketsEndpoint,
                     HttpMethod.GET,
                     null,
                     object : ParameterizedTypeReference<List<Rocket>>() {}
@@ -21,8 +27,8 @@ class RocketsService(val restTemplate: RestTemplate) {
     }
 
     fun getOneRocket(rocketId: Int): Rocket {
-        return kotlin.runCatching {
-            restTemplate.exchange("https://api.spacexdata.com/v3/rockets/$rocketId",
+        return runCatching {
+            restTemplate.exchange("$rocketsEndpoint/$rocketId",
                     HttpMethod.GET,
                     null,
                     object : ParameterizedTypeReference<Rocket>() {}
