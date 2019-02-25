@@ -20,7 +20,7 @@ class RocketsController(
     }
 
     @GetMapping("/{id}", produces = [MediaType.APPLICATION_JSON_UTF8_VALUE])
-    fun getSingleRocket(@PathVariable("id") rocketId: Int): Rocket {
+    fun getSingleRocket(@PathVariable("id") rocketId: String): Rocket {
         return rocketsService.getOneRocket(rocketId)
     }
 

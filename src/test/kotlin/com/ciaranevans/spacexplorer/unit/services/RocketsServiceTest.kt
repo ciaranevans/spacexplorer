@@ -29,6 +29,9 @@ class RocketsServiceTest {
     @Mock
     lateinit var mockRestTemplate: RestTemplate
 
+    @Mock
+    lateinit var mockResponseEntity: ResponseEntity<Rocket>
+
     lateinit var rocketsService: RocketsService
 
     @Before
@@ -87,13 +90,13 @@ class RocketsServiceTest {
 
     @Test
     fun whenGetOneRocketCallIsSuccessfulThenOneRocketReturned() {
-        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets/0"),
+        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets/rocketOne"),
                 eq(HttpMethod.GET),
                 eq(null),
                 eq(object: ParameterizedTypeReference<Rocket>(){})))
                 .thenReturn(ResponseEntity.ok((Rocket(0, true, 1, 1, 9999.0f))))
 
-        val rocket = rocketsService.getOneRocket(0)
+        val rocket = rocketsService.getOneRocket("rocketOne")
 
         assertThat(rocket.id)
                 .`as`("Should have the correct ID")
@@ -106,24 +109,27 @@ class RocketsServiceTest {
 
     @Test(expected = RocketNotFoundException::class)
     fun whenGetOneRocketGetsNothingThenExceptionThrown() {
-        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets/0"),
+        Mockito.`when`(mockResponseEntity.body)
+                .thenReturn(null)
+
+        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets/rocketOne"),
                 eq(HttpMethod.GET),
                 eq(null),
                 eq(object: ParameterizedTypeReference<Rocket>(){})))
-                .thenReturn(null)
+                .thenReturn(mockResponseEntity)
 
-        rocketsService.getOneRocket(0)
+        rocketsService.getOneRocket("rocketOne")
     }
 
     @Test(expected = RocketNotFoundException::class)
     fun whenGetOneRocketThrowsErrorThenExceptionThrown() {
-        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets/0"),
+        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets/rocketOne"),
                 eq(HttpMethod.GET),
                 eq(null),
                 eq(object: ParameterizedTypeReference<Rocket>(){})))
                 .thenThrow(RuntimeException("Bad things happened"))
 
-        rocketsService.getOneRocket(0)
+        rocketsService.getOneRocket("rocketOne")
     }
 
 }

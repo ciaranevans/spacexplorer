@@ -44,10 +44,10 @@ class RocketsControllerTest {
     fun whenGetOneRocketCalledThenOneRocketReturned() {
         val rocket1 = Rocket(0, true, 1, 1, 0.0f)
 
-        Mockito.`when`(rocketsService.getOneRocket(0))
+        Mockito.`when`(rocketsService.getOneRocket("rocketOne"))
                 .thenReturn(rocket1)
 
-        val rocket = rocketsController.getSingleRocket(0)
+        val rocket = rocketsController.getSingleRocket("rocketOne")
 
         assertThat(rocket.id)
                 .`as`("Should be the rocket that was mocked")

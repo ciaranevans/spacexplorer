@@ -26,7 +26,7 @@ class RocketsService(
         }.getOrElse { emptyList() }
     }
 
-    fun getOneRocket(rocketId: Int): Rocket {
+    fun getOneRocket(rocketId: String): Rocket {
         return runCatching {
             restTemplate.exchange("$rocketsEndpoint/$rocketId",
                     HttpMethod.GET,

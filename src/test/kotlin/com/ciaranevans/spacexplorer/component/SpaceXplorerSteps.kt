@@ -26,7 +26,7 @@ class SpaceXplorerSteps(@LocalServerPort
 
     lateinit var response: Response
 
-    @Given("^the https://api.spacexdata.com/v3/rockets is mocked to return some rockets$")
+    @Given("^https://api.spacexdata.com/v3/rockets is mocked to return some rockets$")
     fun theOriginalRocketsEndpointIsMockedToReturnRockets() {
         stubFor(
                 WireMock
@@ -38,6 +38,21 @@ class SpaceXplorerSteps(@LocalServerPort
                                         .withBody("""[{"id":0,"active":true,"stages":2,
                                             "boosters":0,"cost_per_launch":50000000},{"id":1,"active":true,"stages":2,
                                             "boosters":0,"cost_per_launch":50000000}]""")
+                        )
+        )
+    }
+
+    @Given("^https://api.spacexdata.com/v3/rockets/999 is mocked to return one rocket$")
+    fun theOriginalGetOneRocketEndpointIsMockedToReturnRocket() {
+        stubFor(
+                WireMock
+                        .get(urlPathMatching("/v3/rockets/.*"))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(HttpStatus.OK.value())
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
+                                        .withBody("""{"id":999,"active":true,"stages":2,
+                                            "boosters":0,"cost_per_launch":50000000}""")
                         )
         )
     }
@@ -66,6 +81,15 @@ class SpaceXplorerSteps(@LocalServerPort
         assertThat(rockets[1].id)
                 .`as`("Should be one of the mocked rockets")
                 .isEqualTo(1)
+    }
+
+    @Then("^I receive a response of one rocket$")
+    fun iReceiveAResponseOf1Rocket() {
+        val rocket: Rocket = response.body.jsonPath().getObject("", Rocket::class.java)
+
+        assertThat(rocket.id)
+                .`as`("Should be the mocked rocket")
+                .isEqualTo(999)
     }
 
 }
