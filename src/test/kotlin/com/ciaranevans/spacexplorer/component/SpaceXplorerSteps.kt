@@ -2,6 +2,7 @@ package com.ciaranevans.spacexplorer.component
 
 import com.ciaranevans.spacexplorer.Rocket
 import com.ciaranevans.spacexplorer.SpaceXplorerApplication
+import com.ciaranevans.spacexplorer.component.helpers.JsonLoader
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import cucumber.api.java.en.Given
@@ -24,35 +25,34 @@ import org.springframework.test.context.ContextConfiguration
 class SpaceXplorerSteps(@LocalServerPort
                         val port: Int) {
 
+    val jsonLoader: JsonLoader = JsonLoader()
+
     lateinit var response: Response
 
-    @Given("^https://api.spacexdata.com/v3/rockets is mocked to return some rockets$")
-    fun theOriginalRocketsEndpointIsMockedToReturnRockets() {
+    @Given("\"([^\"]*)\" is mocked to return some rockets$")
+    fun theOriginalRocketsEndpointIsMockedToReturnRockets(endpoint: String) {
         stubFor(
                 WireMock
-                        .get(urlEqualTo("/v3/rockets"))
+                        .get(urlPathEqualTo(endpoint))
                         .willReturn(
                                 aResponse()
                                         .withStatus(HttpStatus.OK.value())
                                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
-                                        .withBody("""[{"id":0,"active":true,"stages":2,
-                                            "boosters":0,"cost_per_launch":50000000},{"id":1,"active":true,"stages":2,
-                                            "boosters":0,"cost_per_launch":50000000}]""")
+                                        .withBody(jsonLoader.readJsonFileAsString("two_rockets.json"))
                         )
         )
     }
 
-    @Given("^https://api.spacexdata.com/v3/rockets/999 is mocked to return one rocket$")
-    fun theOriginalGetOneRocketEndpointIsMockedToReturnRocket() {
+    @Given("^\"([^\"]*)\" is mocked to return one rocket$")
+    fun theOriginalGetOneRocketEndpointIsMockedToReturnRocket(endpoint: String) {
         stubFor(
                 WireMock
-                        .get(urlPathMatching("/v3/rockets/.*"))
+                        .get(urlPathEqualTo(endpoint))
                         .willReturn(
                                 aResponse()
                                         .withStatus(HttpStatus.OK.value())
                                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
-                                        .withBody("""{"id":999,"active":true,"stages":2,
-                                            "boosters":0,"cost_per_launch":50000000}""")
+                                        .withBody(jsonLoader.readJsonFileAsString("one_rocket.json"))
                         )
         )
     }
