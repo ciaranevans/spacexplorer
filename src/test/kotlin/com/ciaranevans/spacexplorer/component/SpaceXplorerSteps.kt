@@ -80,7 +80,7 @@ class SpaceXplorerSteps(@LocalServerPort
 
         assertThat(rockets[1].id)
                 .`as`("Should be one of the mocked rockets")
-                .isEqualTo(1)
+                .isEqualTo(101)
     }
 
     @Then("^I receive a response of one rocket$")
