@@ -2,3 +2,6 @@
 
 spacex-api:
   url: https://api.spacexdata.com/v3
+
+server:
+  port: 8081
