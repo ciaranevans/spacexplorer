@@ -1,10 +1,13 @@
 package com.ciaranevans.spacexplorer.component
 
-import com.ciaranevans.spacexplorer.Rocket
+import com.ciaranevans.spacexplorer.models.Roadster
+import com.ciaranevans.spacexplorer.models.Rocket
 import com.ciaranevans.spacexplorer.SpaceXplorerApplication
 import com.ciaranevans.spacexplorer.component.helpers.JsonLoader
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.stubFor
+import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import cucumber.api.java.en.Given
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
@@ -29,32 +32,19 @@ class SpaceXplorerSteps(@LocalServerPort
 
     lateinit var response: Response
 
-    @Given("\"([^\"]*)\" is mocked to return some rockets$")
+    @Given("^\"([^\"]*)\" is mocked to return some rockets$")
     fun theOriginalRocketsEndpointIsMockedToReturnRockets(endpoint: String) {
-        stubFor(
-                WireMock
-                        .get(urlPathEqualTo(endpoint))
-                        .willReturn(
-                                aResponse()
-                                        .withStatus(HttpStatus.OK.value())
-                                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
-                                        .withBody(jsonLoader.readJsonFileAsString("two_rockets.json"))
-                        )
-        )
+        mockEndpointWithJson(endpoint, "two_rockets.json")
     }
 
     @Given("^\"([^\"]*)\" is mocked to return one rocket$")
     fun theOriginalGetOneRocketEndpointIsMockedToReturnRocket(endpoint: String) {
-        stubFor(
-                WireMock
-                        .get(urlPathEqualTo(endpoint))
-                        .willReturn(
-                                aResponse()
-                                        .withStatus(HttpStatus.OK.value())
-                                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
-                                        .withBody(jsonLoader.readJsonFileAsString("one_rocket.json"))
-                        )
-        )
+        mockEndpointWithJson(endpoint, "one_rocket.json")
+    }
+
+    @Given("^\"([^\"]*)\" is mocked to return roadsters data$")
+    fun theOriginalGetRoadsterEndpointIsMockedToReturnRoadsterData(endpoint: String) {
+        mockEndpointWithJson(endpoint, "roadster.json")
     }
 
     @When("^I make a GET request to the \"([^\"]*)\" endpoint$")
@@ -90,6 +80,28 @@ class SpaceXplorerSteps(@LocalServerPort
         assertThat(rocket.id)
                 .`as`("Should be the mocked rocket")
                 .isEqualTo(999)
+    }
+
+    @Then("^I receive a response of correct roadster data$")
+    fun iReceiveRoadsterData() {
+        val roadster: Roadster = response.body.jsonPath().getObject("", Roadster::class.java)
+
+        assertThat(roadster.name)
+                .`as`("Should have the correct name")
+                .isEqualTo("Elon Musk's Tesla Roadster")
+    }
+
+    private fun mockEndpointWithJson(endpoint: String, jsonFileName: String) {
+        stubFor(
+                WireMock
+                        .get(urlPathEqualTo(endpoint))
+                        .willReturn(
+                                aResponse()
+                                        .withStatus(HttpStatus.OK.value())
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
+                                        .withBody(jsonLoader.readJsonFileAsString(jsonFileName))
+                        )
+        )
     }
 
 }

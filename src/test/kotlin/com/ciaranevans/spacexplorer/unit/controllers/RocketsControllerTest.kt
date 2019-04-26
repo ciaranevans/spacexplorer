@@ -1,6 +1,6 @@
 package com.ciaranevans.spacexplorer.unit.controllers
 
-import com.ciaranevans.spacexplorer.Rocket
+import com.ciaranevans.spacexplorer.models.Rocket
 import com.ciaranevans.spacexplorer.controllers.RocketsController
 import com.ciaranevans.spacexplorer.services.RocketsService
 import org.assertj.core.api.Assertions.assertThat
@@ -10,7 +10,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
-import org.springframework.boot.test.context.SpringBootTest
 
 @RunWith(MockitoJUnitRunner::class)
 class RocketsControllerTest {

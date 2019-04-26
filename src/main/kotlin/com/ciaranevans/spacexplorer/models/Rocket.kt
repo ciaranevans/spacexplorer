@@ -1,14 +1,14 @@
-package com.ciaranevans.spacexplorer
+package com.ciaranevans.spacexplorer.models
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Rocket(
-        val id: Int,
-        val active: Boolean,
-        val stages: Int,
-        val boosters: Int,
+        val id: Int = 0,
+        val active: Boolean = false,
+        val stages: Int = 0,
+        val boosters: Int = 0,
         @JsonProperty(value = "cost_per_launch")
-        val costPerLaunch: Float,
+        val costPerLaunch: Float = 0.0f,
         @JsonProperty(value = "success_rate_pct")
         val successRatePercentage: Int = 0,
         @JsonProperty(value = "first_flight")

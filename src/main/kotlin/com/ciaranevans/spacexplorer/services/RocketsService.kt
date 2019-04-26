@@ -1,6 +1,6 @@
 package com.ciaranevans.spacexplorer.services
 
-import com.ciaranevans.spacexplorer.Rocket
+import com.ciaranevans.spacexplorer.models.Rocket
 import com.ciaranevans.spacexplorer.exceptions.RocketNotFoundException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate
 @Service
 class RocketsService(
         val restTemplate: RestTemplate,
-        @Value("\${spacex-api.url}") spacexApiEndpoint: String
+        @Value("\${spacex-api.url}") val spacexApiEndpoint: String
 ) {
 
     private val rocketsEndpoint = "$spacexApiEndpoint/rockets"

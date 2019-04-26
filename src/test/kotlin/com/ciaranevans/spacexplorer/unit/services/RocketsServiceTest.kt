@@ -1,6 +1,6 @@
 package com.ciaranevans.spacexplorer.unit.services
 
-import com.ciaranevans.spacexplorer.Rocket
+import com.ciaranevans.spacexplorer.models.Rocket
 import com.ciaranevans.spacexplorer.exceptions.RocketNotFoundException
 import com.ciaranevans.spacexplorer.services.RocketsService
 import org.assertj.core.api.Assertions.assertThat
@@ -8,12 +8,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.eq
-import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
@@ -21,10 +18,10 @@ import org.springframework.web.client.RestTemplate
 import java.lang.RuntimeException
 import java.util.*
 
-const val END_POINT: String = "anEndpoint"
-
 @RunWith(MockitoJUnitRunner::class)
 class RocketsServiceTest {
+
+    private val endpoint: String = "anEndpoint"
 
     @Mock
     lateinit var mockRestTemplate: RestTemplate
@@ -36,12 +33,12 @@ class RocketsServiceTest {
 
     @Before
     fun setup() {
-        rocketsService = RocketsService(mockRestTemplate, END_POINT)
+        rocketsService = RocketsService(mockRestTemplate, endpoint)
     }
 
     @Test
     fun whenGetAllRocketsCallReturnsEmptyListThenEmptyListOfRocketsReturned() {
-        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets"),
+        Mockito.`when`(mockRestTemplate.exchange(eq("$endpoint/rockets"),
                 eq(HttpMethod.GET),
                 eq(null),
                 eq(object: ParameterizedTypeReference<List<Rocket>>(){})))
@@ -56,7 +53,7 @@ class RocketsServiceTest {
 
     @Test
     fun whenGetAllRocketsCallThrowsErrorThenEmptyListOfRocketsReturned() {
-        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets"),
+        Mockito.`when`(mockRestTemplate.exchange(eq("$endpoint/rockets"),
                 eq(HttpMethod.GET),
                 eq(null),
                 eq(object: ParameterizedTypeReference<List<Rocket>>(){})))
@@ -71,7 +68,7 @@ class RocketsServiceTest {
 
     @Test
     fun whenGetAllRocketsCallIsSuccessfulThenListOfRocketsReturned() {
-        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets"),
+        Mockito.`when`(mockRestTemplate.exchange(eq("$endpoint/rockets"),
                 eq(HttpMethod.GET),
                 eq(null),
                 eq(object: ParameterizedTypeReference<List<Rocket>>(){})))
@@ -90,7 +87,7 @@ class RocketsServiceTest {
 
     @Test
     fun whenGetOneRocketCallIsSuccessfulThenOneRocketReturned() {
-        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets/rocketOne"),
+        Mockito.`when`(mockRestTemplate.exchange(eq("$endpoint/rockets/rocketOne"),
                 eq(HttpMethod.GET),
                 eq(null),
                 eq(object: ParameterizedTypeReference<Rocket>(){})))
@@ -112,7 +109,7 @@ class RocketsServiceTest {
         Mockito.`when`(mockResponseEntity.body)
                 .thenReturn(null)
 
-        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets/rocketOne"),
+        Mockito.`when`(mockRestTemplate.exchange(eq("$endpoint/rockets/rocketOne"),
                 eq(HttpMethod.GET),
                 eq(null),
                 eq(object: ParameterizedTypeReference<Rocket>(){})))
@@ -123,7 +120,7 @@ class RocketsServiceTest {
 
     @Test(expected = RocketNotFoundException::class)
     fun whenGetOneRocketThrowsErrorThenExceptionThrown() {
-        Mockito.`when`(mockRestTemplate.exchange(eq("$END_POINT/rockets/rocketOne"),
+        Mockito.`when`(mockRestTemplate.exchange(eq("$endpoint/rockets/rocketOne"),
                 eq(HttpMethod.GET),
                 eq(null),
                 eq(object: ParameterizedTypeReference<Rocket>(){})))

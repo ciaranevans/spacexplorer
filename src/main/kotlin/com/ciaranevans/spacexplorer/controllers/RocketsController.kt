@@ -1,6 +1,6 @@
 package com.ciaranevans.spacexplorer.controllers
 
-import com.ciaranevans.spacexplorer.Rocket
+import com.ciaranevans.spacexplorer.models.Rocket
 import com.ciaranevans.spacexplorer.services.RocketsService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.CrossOrigin

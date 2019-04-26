@@ -5,7 +5,7 @@ import cucumber.api.junit.Cucumber
 import org.junit.runner.RunWith
 
 @RunWith(Cucumber::class)
-@CucumberOptions(features = ["target/test-classes/component"],
+@CucumberOptions(features = ["src/test/resources/component/features"],
         glue = ["com.ciaranevans.spacexplorer.component"])
 class SpaceXplorerIT {
 }
